@@ -262,6 +262,10 @@ docker-compose up -d
 Do not set the build command to `npm run vercel-build`. The repository's
 `vercel.json` runs the type check and lets Vercel compile the TypeScript function.
 
+Set `WATCH_RELAY_SECRET` as a sensitive Vercel environment variable to enable the
+private NepoFlix watch relay. The relay route is server-to-server only, requires
+signed requests, and does not permit browser CORS access.
+
 **Why Vercel?**
 
 - ![Supported](https://img.shields.io/badge/Supported-brightgreen?style=flat-square) Serverless architecture with automatic scaling

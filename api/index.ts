@@ -5,6 +5,7 @@ import hiAnimeRoutes from '../src/routes/routes.js';
 import config from '../src/config/config.js';
 import { AppError } from '../src/utils/errors.js';
 import { fail } from '../src/utils/response.js';
+import { watchRelayRoute } from '../src/watchRelay.js';
 
 const app = new Hono();
 
@@ -15,17 +16,20 @@ const origins = config.origin.includes(',')
     ? '*'
     : [config.origin];
 
-app.use(
-  '*',
-  cors({
+app.use('*', async (c, next) => {
+  if (new URL(c.req.url).pathname === '/internal/watch-relay') {
+    await next();
+    return;
+  }
+  return cors({
     origin: origins,
     allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
     exposeHeaders: ['Content-Length', 'X-Request-Id'],
     maxAge: 600,
     credentials: true,
-  })
-);
+  })(c, next);
+});
 
 // Logging
 if (!config.isProduction || config.enableLogging) {
@@ -40,6 +44,8 @@ app.get('/ping', c => {
     environment: 'vercel',
   });
 });
+
+app.post('/internal/watch-relay', watchRelayRoute);
 
 // Routes
 app.route('/api/v2', hiAnimeRoutes);

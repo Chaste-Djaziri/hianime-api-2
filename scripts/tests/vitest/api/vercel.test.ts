@@ -34,4 +34,15 @@ describe('Vercel function entry point', () => {
 
     expect(extensionlessImports).toEqual([]);
   });
+
+  it('does not expose CORS headers on the private relay', async () => {
+    const response = await handler.fetch(
+      new Request('https://example.com/internal/watch-relay', {
+        method: 'OPTIONS',
+        headers: { origin: 'https://attacker.example' },
+      })
+    );
+
+    expect(response.headers.get('access-control-allow-origin')).toBeNull();
+  });
 });
