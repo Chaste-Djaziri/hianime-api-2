@@ -173,13 +173,19 @@ const sanitizeHeaders = (value: unknown, allowed: Set<string>): Headers => {
   return headers;
 };
 
-const parseRange = (value: string): { start: number; end: number; length: number } | null => {
-  const match = /^bytes=(\d+)-(\d+)$/.exec(value.trim());
+const parseRange = (value: string): { length: number } | null => {
+  const normalized = value.trim();
+  const suffixMatch = /^bytes=-(\d+)$/.exec(normalized);
+  if (suffixMatch) {
+    const length = Number(suffixMatch[1]);
+    return Number.isSafeInteger(length) && length > 0 ? { length } : null;
+  }
+  const match = /^bytes=(\d+)-(\d+)$/.exec(normalized);
   if (!match) return null;
   const start = Number(match[1]);
   const end = Number(match[2]);
   if (!Number.isSafeInteger(start) || !Number.isSafeInteger(end) || end < start) return null;
-  return { start, end, length: end - start + 1 };
+  return { length: end - start + 1 };
 };
 
 const readBoundedBody = async (response: Response, maxBytes: number): Promise<Uint8Array> => {

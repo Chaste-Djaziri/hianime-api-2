@@ -203,4 +203,24 @@ describe('private watch relay', () => {
       expect.objectContaining({ headers: expect.any(Headers), redirect: 'manual' })
     );
   });
+
+  it('accepts bounded suffix media ranges', async () => {
+    const fetchImpl = vi.fn<typeof fetch>().mockResolvedValue(
+      new Response(new Uint8Array(512), {
+        status: 206,
+        headers: { 'content-range': 'bytes 9488-9999/10000' },
+      })
+    );
+    const body = JSON.stringify({
+      operation: 'media',
+      url: 'https://media.example/video.mp4',
+      range: 'bytes=-512',
+    });
+
+    const response = await handleWatchRelayRequest(signRequest(body), dependencies(fetchImpl));
+
+    expect(response.status).toBe(206);
+    const forwardedHeaders = fetchImpl.mock.calls[0]?.[1]?.headers as Headers;
+    expect(forwardedHeaders.get('range')).toBe('bytes=-512');
+  });
 });
