@@ -1,6 +1,6 @@
 import { load } from 'cheerio';
-import config from '../config/config';
-import { extractNextFlightObject } from './extractNextFlight';
+import config from '../config/config.js';
+import { extractNextFlightObject } from './extractNextFlight.js';
 
 export interface Episode {
   title: string | null;

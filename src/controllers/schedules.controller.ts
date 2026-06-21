@@ -1,8 +1,8 @@
 import { Context } from 'hono';
-import config from '../config/config';
-import { validationError } from '../utils/errors';
-import { extractSchedule, ScheduledAnime } from '../extractor/extractSchedule';
-import { axiosInstance } from '../services/axiosInstance';
+import config from '../config/config.js';
+import { validationError } from '../utils/errors.js';
+import { extractSchedule, ScheduledAnime } from '../extractor/extractSchedule.js';
+import { axiosInstance } from '../services/axiosInstance.js';
 
 export interface ScheduleResponse {
   success: boolean;

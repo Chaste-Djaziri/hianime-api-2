@@ -1,6 +1,6 @@
 import { load } from 'cheerio';
 import { Element } from 'domhandler';
-import { AnimeFeatured, TrendingAnime } from '../types/anime';
+import { AnimeFeatured, TrendingAnime } from '../types/anime.js';
 
 export interface ListPageResponse {
   pageInfo: {

@@ -1,10 +1,10 @@
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { logger } from 'hono/logger';
-import hiAnimeRoutes from '../src/routes/routes';
-import config from '../src/config/config';
-import { AppError } from '../src/utils/errors';
-import { fail } from '../src/utils/response';
+import hiAnimeRoutes from '../src/routes/routes.js';
+import config from '../src/config/config.js';
+import { AppError } from '../src/utils/errors.js';
+import { fail } from '../src/utils/response.js';
 
 const app = new Hono();
 

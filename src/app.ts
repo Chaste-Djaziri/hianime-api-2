@@ -1,10 +1,10 @@
 import { Hono, Context } from 'hono';
 import { cors } from 'hono/cors';
-import hiAnimeRoutes from './routes/routes';
-import { AppError } from './utils/errors';
-import { fail } from './utils/response';
+import hiAnimeRoutes from './routes/routes.js';
+import { AppError } from './utils/errors.js';
+import { fail } from './utils/response.js';
 import { logger } from 'hono/logger';
-import config from './config/config';
+import config from './config/config.js';
 
 const app = new Hono();
 const origins = config.origin.includes(',')

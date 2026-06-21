@@ -1,7 +1,7 @@
 import { Context } from 'hono';
-import { axiosInstance } from '../services/axiosInstance';
-import { validationError } from '../utils/errors';
-import { extractNews, NewsResponse } from '../extractor/extractNews';
+import { axiosInstance } from '../services/axiosInstance.js';
+import { validationError } from '../utils/errors.js';
+import { extractNews, NewsResponse } from '../extractor/extractNews.js';
 
 const newsController = async (c: Context): Promise<NewsResponse> => {
   const page = c.req.query('page') || '1';

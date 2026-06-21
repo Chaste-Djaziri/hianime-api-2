@@ -1,7 +1,7 @@
 import { Context } from 'hono';
-import { extractCharacterDetail, CharacterDetail } from '../extractor/extractCharacterDetail';
-import { axiosInstance } from '../services/axiosInstance';
-import { validationError } from '../utils/errors';
+import { extractCharacterDetail, CharacterDetail } from '../extractor/extractCharacterDetail.js';
+import { axiosInstance } from '../services/axiosInstance.js';
+import { validationError } from '../utils/errors.js';
 
 const characterDetailConroller = async (c: Context): Promise<CharacterDetail> => {
   const id = c.req.param('id');

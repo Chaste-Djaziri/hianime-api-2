@@ -1,6 +1,6 @@
 import { Context, Next } from 'hono';
-import { fail, success } from './response';
-import { AppError } from './errors';
+import { fail, success } from './response.js';
+import { AppError } from './errors.js';
 
 const handler = (fn: (c: Context, next: Next) => Promise<unknown> | unknown) => {
   return async (c: Context, next: Next) => {

@@ -1,8 +1,8 @@
 import { Context } from 'hono';
-import config from '../config/config';
-import { validationError } from '../utils/errors';
-import { extractCharacters, CharactersResponse } from '../extractor/extractCharacters';
-import { axiosInstance } from '../services/axiosInstance';
+import config from '../config/config.js';
+import { validationError } from '../utils/errors.js';
+import { extractCharacters, CharactersResponse } from '../extractor/extractCharacters.js';
+import { axiosInstance } from '../services/axiosInstance.js';
 
 const charactersController = async (c: Context): Promise<CharactersResponse> => {
   try {

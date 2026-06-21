@@ -1,7 +1,7 @@
 import { Context } from 'hono';
-import { extractNextEpisodeSchedule } from '../extractor/extractNextEpisodeSchedule';
-import { axiosInstance } from '../services/axiosInstance';
-import { validationError } from '../utils/errors';
+import { extractNextEpisodeSchedule } from '../extractor/extractNextEpisodeSchedule.js';
+import { axiosInstance } from '../services/axiosInstance.js';
+import { validationError } from '../utils/errors.js';
 
 const nextEpisodeSchaduleController = async (c: Context): Promise<unknown> => {
   const id = c.req.param('id');

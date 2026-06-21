@@ -1,6 +1,6 @@
 import { Context } from 'hono';
-import { axiosInstance } from '../services/axiosInstance';
-import { validationError } from '../utils/errors';
+import { axiosInstance } from '../services/axiosInstance.js';
+import { validationError } from '../utils/errors.js';
 import * as cheerio from 'cheerio';
 
 const randomController = async (_c: Context): Promise<{ id: string }> => {

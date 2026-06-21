@@ -1,13 +1,13 @@
 import { Context } from 'hono';
-import config from '../config/config';
-import { validationError } from '../utils/errors';
+import config from '../config/config.js';
+import { validationError } from '../utils/errors.js';
 import {
   extractEpisodes,
   extractEpisodesFromApi,
   Episode,
   NextEpisodesApiResponse,
-} from '../extractor/extractEpisodes';
-import { axiosInstance } from '../services/axiosInstance';
+} from '../extractor/extractEpisodes.js';
+import { axiosInstance } from '../services/axiosInstance.js';
 
 export interface EpisodesResponse {
   totalEpisodes: number;

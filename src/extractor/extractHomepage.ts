@@ -1,7 +1,7 @@
 import { load } from 'cheerio';
 import { Element } from 'domhandler';
-import { HomePage, SpotlightAnime, TrendingAnime, AnimeFeatured } from '../types/anime';
-import { extractNextFlightObject } from './extractNextFlight';
+import { HomePage, SpotlightAnime, TrendingAnime, AnimeFeatured } from '../types/anime.js';
+import { extractNextFlightObject } from './extractNextFlight.js';
 
 interface NextAnimeCard {
   slug: string;

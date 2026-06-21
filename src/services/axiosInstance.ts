@@ -1,4 +1,4 @@
-import config from '../config/config';
+import config from '../config/config.js';
 
 const MAX_RETRIES = 3;
 const RETRY_DELAY = 1000;

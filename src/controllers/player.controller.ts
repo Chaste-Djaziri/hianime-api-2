@@ -1,6 +1,6 @@
 import { Context } from 'hono';
-import { createEmbedUrl } from '../extractor/extractEpisodes';
-import { validationError } from '../utils/errors';
+import { createEmbedUrl } from '../extractor/extractEpisodes.js';
+import { validationError } from '../utils/errors.js';
 
 const playerController = (c: Context) => {
   const id = c.req.param('id');
