@@ -1,4 +1,19 @@
 export const mockHtmlData = {
+  searchApi: JSON.stringify({
+    response: [
+      {
+        slug: 'that-time-i-got-reincarnated-as-a-slime-9265',
+        title: 'That Time I Got Reincarnated as a Slime',
+        alternativeTitle: 'Tensei shitara Slime Datta Ken',
+        type: 'TV',
+        episodes_count: 24,
+        sub_count: 24,
+        dub_count: 24,
+        images: { poster: 'https://example.com/slime.jpg' },
+      },
+    ],
+    pageInfo: { currentPage: 2, hasNextPage: true, totalPages: 4 },
+  }),
   homepageApi: JSON.stringify({
     success: true,
     data: {

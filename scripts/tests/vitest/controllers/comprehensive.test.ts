@@ -60,9 +60,28 @@ describe('Controllers Comprehensive Suite', () => {
   });
 
   it('searchController should return search results', async () => {
-    mockSuccess(mockHtmlData.search);
-    const result = await searchController(createMockContext({}, { keyword: 'one' }));
-    expect(result.response).toHaveLength(1);
+    mockSuccess(mockHtmlData.searchApi);
+    const result = await searchController(createMockContext({}, { keyword: 'slime', page: '2' }));
+    expect(result.animes).toHaveLength(1);
+    expect(result.animes[0].id).toBe('that-time-i-got-reincarnated-as-a-slime-9265');
+    expect(result.pageInfo).toEqual({ currentPage: 2, hasNextPage: true, totalPages: 4 });
+    expect(axiosInstance).toHaveBeenCalledWith(
+      'https://api.kryzox.xyz/search?keyword=slime&page=2'
+    );
+  });
+
+  it('searchController should reject empty search results', async () => {
+    mockSuccess(JSON.stringify({ response: [], pageInfo: { currentPage: 1, totalPages: 1 } }));
+    await expect(searchController(createMockContext({}, { keyword: 'missing' }))).rejects.toThrow(
+      'page not found'
+    );
+  });
+
+  it('searchController should reject malformed provider JSON', async () => {
+    mockSuccess('{not-json');
+    await expect(searchController(createMockContext({}, { keyword: 'broken' }))).rejects.toThrow(
+      'malformed JSON'
+    );
   });
 
   it('episodesController should return episodes', async () => {
