@@ -1,4 +1,35 @@
 export const mockHtmlData = {
+  homepageApi: JSON.stringify({
+    success: true,
+    data: {
+      spotlight: [
+        {
+          id: 12,
+          slug: 'one-piece-12',
+          titles: { romaji: 'One Piece', english: 'One Piece', native: 'ONE PIECE' },
+          type: 'TV',
+          quality: 'HD',
+          episodes: 1166,
+          duration: '24m',
+          sub: 1166,
+          dub: 1130,
+          rank: 1,
+          aired: '1999',
+          images: { poster: 'https://example.com/one-piece.jpg' },
+          synopsis: 'A pirate adventure.',
+        },
+      ],
+      trending: [],
+      latestEpisode: [],
+      topAiring: { all: [], sub: [], dub: [], china: [] },
+      mostPopular: [],
+      mostFavorite: [],
+      justCompleted: [],
+      newAdded: [],
+      topUpcoming: [],
+      top10: { today: [], week: [], month: [] },
+    },
+  }),
   nextHomepage: `
     <script>
       self.__next_f.push([1,"21:[\\"$\\",\\"$L2a\\",null,{\\"homeData\\":{\\"success\\":true,\\"data\\":{\\"spotlight\\":[{\\"id\\":12,\\"slug\\":\\"one-piece-12\\",\\"titles\\":{\\"romaji\\":\\"One Piece\\",\\"english\\":\\"One Piece\\",\\"native\\":\\"ONE PIECE\\"},\\"type\\":\\"TV\\",\\"quality\\":\\"HD\\",\\"episodes\\":1166,\\"duration\\":\\"24m\\",\\"sub\\":1166,\\"dub\\":1130,\\"rank\\":1,\\"aired\\":\\"1999\\",\\"images\\":{\\"poster\\":\\"https://example.com/one-piece.jpg\\"},\\"synopsis\\":\\"A pirate adventure.\\"}],\\"trending\\":[],\\"latestEpisode\\":[],\\"topAiring\\":{\\"all\\":[],\\"sub\\":[],\\"dub\\":[],\\"china\\":[]},\\"mostPopular\\":[],\\"mostFavorite\\":[],\\"justCompleted\\":[],\\"newAdded\\":[],\\"topUpcoming\\":[],\\"top10\\":{\\"today\\":[],\\"week\\":[],\\"month\\":[]}}}}}]"])

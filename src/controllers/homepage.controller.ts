@@ -2,10 +2,11 @@ import { axiosInstance } from '../services/axiosInstance.js';
 import { validationError } from '../utils/errors.js';
 import { extractHomepage } from '../extractor/extractHomepage.js';
 import { HomePage } from '../types/anime.js';
+import config from '../config/config.js';
 
 const homepageController = async (): Promise<HomePage> => {
   console.log('Fetching homepage data from external API...');
-  const result = await axiosInstance('/home');
+  const result = await axiosInstance(`${config.dataApiBaseurl}/home`);
 
   if (!result.success || !result.data) {
     console.error('Homepage fetch failed:', result.message);

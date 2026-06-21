@@ -32,6 +32,12 @@ describe('Extractors Comprehensive Suite', () => {
         poster: 'https://example.com/one-piece.jpg',
       });
     });
+
+    it('should extract the current homepage JSON API payload', () => {
+      const result = extractHomepage(mockHtmlData.homepageApi);
+      expect(result.spotlight).toHaveLength(1);
+      expect(result.spotlight[0].id).toBe('one-piece-12');
+    });
   });
 
   describe('extractDetailpage', () => {

@@ -58,11 +58,10 @@ const toTrending = (anime: NextAnimeCard, index: number): TrendingAnime => ({
   rank: anime.rank ?? index + 1,
 });
 
-const extractNextHomepage = (html: string): HomePage | null => {
-  const root = extractNextFlightObject<{ homeData: NextHomeData }>(html, '{"homeData":');
-  if (!root?.homeData?.success || !root.homeData.data) return null;
+export const extractHomepageFromApi = (homeData: NextHomeData): HomePage | null => {
+  if (!homeData?.success || !homeData.data) return null;
 
-  const data = root.homeData.data;
+  const data = homeData.data;
   const topAiring = Array.isArray(data.topAiring) ? data.topAiring : data.topAiring?.all;
 
   return {
@@ -91,7 +90,19 @@ const extractNextHomepage = (html: string): HomePage | null => {
   };
 };
 
+const extractNextHomepage = (html: string): HomePage | null => {
+  const root = extractNextFlightObject<{ homeData: NextHomeData }>(html, '{"homeData":');
+  return root?.homeData ? extractHomepageFromApi(root.homeData) : null;
+};
+
 export const extractHomepage = (html: string): HomePage => {
+  try {
+    const apiHomepage = extractHomepageFromApi(JSON.parse(html) as NextHomeData);
+    if (apiHomepage) return apiHomepage;
+  } catch {
+    // Continue with the Next.js and legacy HTML extractors.
+  }
+
   const nextHomepage = extractNextHomepage(html);
   if (nextHomepage) return nextHomepage;
 

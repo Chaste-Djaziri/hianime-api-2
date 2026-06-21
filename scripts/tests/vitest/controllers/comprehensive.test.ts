@@ -47,9 +47,10 @@ describe('Controllers Comprehensive Suite', () => {
     (axiosInstance as Mock).mockResolvedValue({ success: true, data });
 
   it('homepageController should return homepage data', async () => {
-    mockSuccess(mockHtmlData.homepage);
+    mockSuccess(mockHtmlData.homepageApi);
     const result = (await homepageController()) as unknown as Record<string, unknown>;
     expect(result.spotlight).toBeDefined();
+    expect(axiosInstance).toHaveBeenCalledWith('https://api.kryzox.xyz/home');
   });
 
   it('detailpageController should return anime details', async () => {
