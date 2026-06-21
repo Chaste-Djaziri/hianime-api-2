@@ -2,6 +2,108 @@ import { load } from 'cheerio';
 import { Element } from 'domhandler';
 import { DetailAnime, AnimeFeatured, Season } from '../types/anime';
 
+interface ApiAnimeSummary {
+  slug?: string;
+  titles?: { romaji?: string | null; english?: string | null; native?: string | null };
+  images?: { poster?: string | null };
+  episode?: { episodes?: number | null; sub?: number | null; dub?: number | null };
+  duration_min?: number | null;
+  type?: string | null;
+  is_adult?: boolean;
+}
+
+export interface ApiAnimeDetail extends ApiAnimeSummary {
+  id: number;
+  slug: string;
+  titles: {
+    romaji?: string | null;
+    english?: string | null;
+    native?: string | null;
+    synonyms?: string[];
+  };
+  synopsis?: string | null;
+  status?: string | null;
+  season?: { name?: string | null; year?: number | null } | null;
+  score_mal?: number | null;
+  rating?: string | null;
+  air?: { start?: string | null; end?: string | null } | null;
+  genres?: string[];
+  studios?: { name: string }[];
+  producers?: { name: string }[];
+  seasons?: (ApiAnimeSummary & { id?: number; isCurrent?: boolean })[];
+  relations?: { anime: ApiAnimeSummary }[];
+  recommendations?: ApiAnimeSummary[];
+}
+
+const toFeatured = (anime: ApiAnimeSummary): AnimeFeatured => ({
+  title: anime.titles?.english || anime.titles?.romaji || null,
+  alternativeTitle: anime.titles?.romaji || anime.titles?.native || null,
+  id: anime.slug || null,
+  poster: anime.images?.poster || null,
+  type: anime.type || null,
+  duration: anime.duration_min ? `${anime.duration_min}m` : null,
+  episodes: {
+    sub: anime.episode?.sub ?? null,
+    dub: anime.episode?.dub ?? null,
+    eps: anime.episode?.episodes ?? anime.episode?.sub ?? null,
+  },
+});
+
+const plainText = (html: string | null | undefined) => {
+  if (!html) return null;
+  return (
+    load(html.replace(/<br\s*\/?>/gi, '\n'))
+      .text()
+      .trim() || null
+  );
+};
+
+export const extractDetailpageFromApi = (anime: ApiAnimeDetail): DetailAnime => ({
+  title: anime.titles.english || anime.titles.romaji || null,
+  alternativeTitle: anime.titles.romaji || anime.titles.native || null,
+  japanese: anime.titles.native || null,
+  id: anime.slug,
+  poster: anime.images?.poster || null,
+  rating: anime.rating || null,
+  type: anime.type || null,
+  is18Plus: anime.is_adult ?? false,
+  episodes: {
+    sub: anime.episode?.sub ?? null,
+    dub: anime.episode?.dub ?? null,
+    eps: anime.episode?.episodes ?? anime.episode?.sub ?? null,
+  },
+  synopsis: plainText(anime.synopsis),
+  synonyms: anime.titles.synonyms?.join(', ') || null,
+  aired: {
+    from: anime.air?.start || null,
+    to: anime.air?.end || null,
+  },
+  premiered:
+    anime.season?.name && anime.season.year
+      ? `${anime.season.name.charAt(0)}${anime.season.name.slice(1).toLowerCase()} ${anime.season.year}`
+      : null,
+  duration: anime.duration_min ? `${anime.duration_min}m` : null,
+  status: anime.status || null,
+  MAL_score: anime.score_mal != null ? String(anime.score_mal) : null,
+  genres: anime.genres || [],
+  studios: (anime.studios || []).map(studio => studio.name),
+  producers: (anime.producers || []).map(producer => producer.name),
+  moreSeasons: (anime.seasons || []).map(season => ({
+    title: season.titles?.english || season.titles?.romaji || null,
+    alternativeTitle: season.titles?.romaji || season.titles?.native || null,
+    id: season.slug || null,
+    poster: season.images?.poster || null,
+    isActive: season.slug === anime.slug || season.isCurrent === true,
+  })),
+  related: (anime.relations || []).map(relation => toFeatured(relation.anime)),
+  mostPopular: [],
+  recommended: (anime.recommendations || []).map(recommendation => ({
+    ...toFeatured(recommendation),
+    is18Plus: recommendation.is_adult ?? false,
+    duration: recommendation.duration_min ? `${recommendation.duration_min}m` : null,
+  })),
+});
+
 export const extractDetailpage = (html: string): DetailAnime => {
   const $ = load(html);
 

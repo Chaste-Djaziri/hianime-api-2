@@ -15,6 +15,7 @@ import nextEpisodeScheduleController from '../../../../src/controllers/nextEpiso
 import randomController from '../../../../src/controllers/random.controller';
 import filterController from '../../../../src/controllers/filter.controller';
 import allGenresController from '../../../../src/controllers/allGenres.controller';
+import playerController from '../../../../src/controllers/player.controller';
 import { mockHtmlData } from '../../data/mocks';
 
 // Mock axiosInstance globally
@@ -64,9 +65,17 @@ describe('Controllers Comprehensive Suite', () => {
   });
 
   it('episodesController should return episodes', async () => {
-    mockSuccess(mockHtmlData.episodes);
-    const result = await episodesController(createMockContext({ id: '123' }));
-    expect(result).toHaveLength(1);
+    mockSuccess(mockHtmlData.nextAnime);
+    const result = await episodesController(createMockContext({ id: 'one-piece-12' }));
+    expect(result.totalEpisodes).toBe(1);
+    expect(result.episodes).toHaveLength(1);
+  });
+
+  it('playerController should return the current embed URL', () => {
+    const result = playerController(
+      createMockContext({ id: 'one-piece-12', episode: '1' }, { type: 'dub' })
+    );
+    expect(result.embedUrl).toBe('https://cdn.4animo.xyz/embed/hd-1/12/1/dub?k=1');
   });
 
   it('charactersController should return characters', async () => {

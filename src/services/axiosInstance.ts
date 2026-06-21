@@ -11,7 +11,7 @@ export const axiosInstance = async (
   options: { headers?: Record<string, string>; retries?: number } = {}
 ) => {
   const { headers: customHeaders = {}, retries = MAX_RETRIES } = options;
-  const url = config.baseurl + endpoint;
+  const url = /^https?:\/\//.test(endpoint) ? endpoint : config.baseurl + endpoint;
   let lastError = null;
 
   for (let attempt = 0; attempt < retries; attempt++) {

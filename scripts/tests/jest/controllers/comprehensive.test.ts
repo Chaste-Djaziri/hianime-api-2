@@ -67,9 +67,10 @@ describe('Controllers Comprehensive Suite (Jest)', () => {
   });
 
   it('episodesController should return episodes', async () => {
-    mockSuccess(mockHtmlData.episodes);
-    const result = await episodesController(createMockContext({ id: '123' }));
-    expect(result).toHaveLength(1);
+    mockSuccess(mockHtmlData.nextAnime);
+    const result = await episodesController(createMockContext({ id: 'one-piece-12' }));
+    expect(result.totalEpisodes).toBe(1);
+    expect(result.episodes).toHaveLength(1);
   });
 
   it('charactersController should return characters', async () => {

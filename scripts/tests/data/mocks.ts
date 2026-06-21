@@ -1,4 +1,14 @@
 export const mockHtmlData = {
+  nextHomepage: `
+    <script>
+      self.__next_f.push([1,"21:[\\"$\\",\\"$L2a\\",null,{\\"homeData\\":{\\"success\\":true,\\"data\\":{\\"spotlight\\":[{\\"id\\":12,\\"slug\\":\\"one-piece-12\\",\\"titles\\":{\\"romaji\\":\\"One Piece\\",\\"english\\":\\"One Piece\\",\\"native\\":\\"ONE PIECE\\"},\\"type\\":\\"TV\\",\\"quality\\":\\"HD\\",\\"episodes\\":1166,\\"duration\\":\\"24m\\",\\"sub\\":1166,\\"dub\\":1130,\\"rank\\":1,\\"aired\\":\\"1999\\",\\"images\\":{\\"poster\\":\\"https://example.com/one-piece.jpg\\"},\\"synopsis\\":\\"A pirate adventure.\\"}],\\"trending\\":[],\\"latestEpisode\\":[],\\"topAiring\\":{\\"all\\":[],\\"sub\\":[],\\"dub\\":[],\\"china\\":[]},\\"mostPopular\\":[],\\"mostFavorite\\":[],\\"justCompleted\\":[],\\"newAdded\\":[],\\"topUpcoming\\":[],\\"top10\\":{\\"today\\":[],\\"week\\":[],\\"month\\":[]}}}}}]"])
+    </script>
+  `,
+  nextAnime: `
+    <script>
+      self.__next_f.push([1,"15:[\\"$\\",\\"$L1e\\",null,{\\"slug\\":\\"one-piece-12\\",\\"anime\\":{\\"id\\":12,\\"slug\\":\\"one-piece-12\\",\\"titles\\":{\\"romaji\\":\\"One Piece\\",\\"english\\":\\"One Piece\\",\\"native\\":\\"ONE PIECE\\",\\"synonyms\\":[]},\\"episode\\":{\\"episodes\\":1166,\\"sub\\":1166,\\"dub\\":1130}},\\"episodes\\":[{\\"id\\":1,\\"anime_id\\":12,\\"number\\":1,\\"titles\\":{\\"en\\":\\"I'm Luffy!\\",\\"ja\\":\\"Ore wa Luffy!\\",\\"romaji\\":\\"Ore wa Luffy!\\"},\\"filler\\":false,\\"thumbnail\\":\\"https://example.com/episode-1.jpg\\",\\"sub\\":true,\\"dub\\":true,\\"embed_id\\":\\"2142\\"}],\\"currentEpisode\\":1,\\"relations\\":[],\\"recommendations\\":[]}]" ])
+    </script>
+  `,
   homepage: `
     <div class="deslide-wrap">
       <div class="swiper-wrapper">

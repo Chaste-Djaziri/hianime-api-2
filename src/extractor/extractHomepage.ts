@@ -1,8 +1,100 @@
 import { load } from 'cheerio';
 import { Element } from 'domhandler';
 import { HomePage, SpotlightAnime, TrendingAnime, AnimeFeatured } from '../types/anime';
+import { extractNextFlightObject } from './extractNextFlight';
+
+interface NextAnimeCard {
+  slug: string;
+  titles?: { romaji?: string | null; english?: string | null; native?: string | null };
+  type?: string | null;
+  quality?: string | null;
+  episodes?: number | null;
+  duration?: string | null;
+  sub?: number | null;
+  dub?: number | null;
+  rank?: number | null;
+  aired?: string | null;
+  synopsis?: string | null;
+  images?: { poster?: string | null };
+}
+
+interface NextHomeData {
+  success: boolean;
+  data: {
+    spotlight?: NextAnimeCard[];
+    trending?: NextAnimeCard[];
+    latestEpisode?: NextAnimeCard[];
+    topAiring?: { all?: NextAnimeCard[] } | NextAnimeCard[];
+    mostPopular?: NextAnimeCard[];
+    mostFavorite?: NextAnimeCard[];
+    justCompleted?: NextAnimeCard[];
+    newAdded?: NextAnimeCard[];
+    topUpcoming?: NextAnimeCard[];
+    top10?: { today?: NextAnimeCard[]; week?: NextAnimeCard[]; month?: NextAnimeCard[] };
+  };
+}
+
+const titleFor = (anime: NextAnimeCard) => anime.titles?.english || anime.titles?.romaji || null;
+
+const toFeatured = (anime: NextAnimeCard): AnimeFeatured => ({
+  title: titleFor(anime),
+  alternativeTitle: anime.titles?.romaji || anime.titles?.native || null,
+  id: anime.slug || null,
+  poster: anime.images?.poster || null,
+  type: anime.type || null,
+  duration: anime.duration || null,
+  episodes: {
+    sub: anime.sub ?? null,
+    dub: anime.dub ?? null,
+    eps: anime.episodes ?? anime.sub ?? null,
+  },
+});
+
+const toTrending = (anime: NextAnimeCard, index: number): TrendingAnime => ({
+  title: titleFor(anime),
+  alternativeTitle: anime.titles?.romaji || anime.titles?.native || null,
+  id: anime.slug || null,
+  poster: anime.images?.poster || null,
+  rank: anime.rank ?? index + 1,
+});
+
+const extractNextHomepage = (html: string): HomePage | null => {
+  const root = extractNextFlightObject<{ homeData: NextHomeData }>(html, '{"homeData":');
+  if (!root?.homeData?.success || !root.homeData.data) return null;
+
+  const data = root.homeData.data;
+  const topAiring = Array.isArray(data.topAiring) ? data.topAiring : data.topAiring?.all;
+
+  return {
+    spotlight: (data.spotlight || []).map((anime, index) => ({
+      ...toFeatured(anime),
+      rank: anime.rank ?? index + 1,
+      quality: anime.quality || null,
+      aired: anime.aired || null,
+      synopsis: anime.synopsis?.startsWith('$') ? null : anime.synopsis || null,
+      duration: anime.duration || null,
+    })),
+    trending: (data.trending || []).map(toTrending),
+    topAiring: (topAiring || []).map(toFeatured),
+    mostPopular: (data.mostPopular || []).map(toFeatured),
+    mostFavorite: (data.mostFavorite || []).map(toFeatured),
+    latestCompleted: (data.justCompleted || []).map(toFeatured),
+    latestEpisode: (data.latestEpisode || []).map(toFeatured),
+    newAdded: (data.newAdded || []).map(toFeatured),
+    topUpcoming: (data.topUpcoming || []).map(toFeatured),
+    top10: {
+      today: (data.top10?.today || []).map(toTrending),
+      week: (data.top10?.week || []).map(toTrending),
+      month: (data.top10?.month || []).map(toTrending),
+    },
+    genres: [],
+  };
+};
 
 export const extractHomepage = (html: string): HomePage => {
+  const nextHomepage = extractNextHomepage(html);
+  if (nextHomepage) return nextHomepage;
+
   const $ = load(html);
 
   const response: HomePage = {

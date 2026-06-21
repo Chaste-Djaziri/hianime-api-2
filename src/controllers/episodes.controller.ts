@@ -1,20 +1,32 @@
 import { Context } from 'hono';
 import config from '../config/config';
 import { validationError } from '../utils/errors';
-import { extractEpisodes, Episode } from '../extractor/extractEpisodes';
+import {
+  extractEpisodes,
+  extractEpisodesFromApi,
+  Episode,
+  NextEpisodesApiResponse,
+} from '../extractor/extractEpisodes';
 import { axiosInstance } from '../services/axiosInstance';
 
-const episodesController = async (c: Context): Promise<Episode[]> => {
+export interface EpisodesResponse {
+  totalEpisodes: number;
+  episodes: Episode[];
+}
+
+const episodesController = async (c: Context): Promise<EpisodesResponse> => {
   const id = c.req.param('id');
 
   if (!id) throw new validationError('id is required');
 
-  const idNum = id.split('-').at(-1);
-  const ajaxUrl = `/ajax/v2/episode/list/${idNum}`;
+  const numericId = Number(id.split('-').at(-1));
+  if (!Number.isInteger(numericId) || numericId <= 0) {
+    throw new validationError('Anime id must end with its numeric id', {
+      validIdExample: 'one-piece-12',
+    });
+  }
 
-  const result = await axiosInstance(ajaxUrl, {
-    headers: { Referer: `${config.baseurl}/watch/${id}` },
-  });
+  const result = await axiosInstance(`${config.dataApiBaseurl}/anime/${numericId}/episodes`);
 
   if (!result.success || !result.data) {
     throw new validationError(result.message || 'make sure the id is correct', {
@@ -22,8 +34,19 @@ const episodesController = async (c: Context): Promise<Episode[]> => {
     });
   }
 
-  const response = extractEpisodes(result.data);
-  return response;
+  let episodes: Episode[];
+  try {
+    episodes = extractEpisodesFromApi(JSON.parse(result.data) as NextEpisodesApiResponse, id);
+  } catch {
+    episodes = extractEpisodes(result.data, id);
+  }
+  if (episodes.length === 0) {
+    throw new validationError('No episodes found; make sure the anime id is correct', {
+      validIdExample: 'one-piece-12',
+    });
+  }
+
+  return { totalEpisodes: episodes.length, episodes };
 };
 
 export default episodesController;

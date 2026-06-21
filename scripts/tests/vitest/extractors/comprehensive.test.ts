@@ -1,11 +1,14 @@
 import { describe, it, expect } from 'vitest';
 import { extractHomepage } from '../../../../src/extractor/extractHomepage';
-import { extractDetailpage } from '../../../../src/extractor/extractDetailpage';
+import {
+  extractDetailpage,
+  extractDetailpageFromApi,
+} from '../../../../src/extractor/extractDetailpage';
 import { extractListPage } from '../../../../src/extractor/extractListpage';
 import { extractCharacters } from '../../../../src/extractor/extractCharacters';
 import { extractNews } from '../../../../src/extractor/extractNews';
 import { extractSchedule } from '../../../../src/extractor/extractSchedule';
-import { extractEpisodes } from '../../../../src/extractor/extractEpisodes';
+import { extractEpisodes, extractEpisodesFromApi } from '../../../../src/extractor/extractEpisodes';
 import { extractCharacterDetail } from '../../../../src/extractor/extractCharacterDetail';
 import { extractSuggestions } from '../../../../src/extractor/extractSuggestions';
 import { extractTopSearch } from '../../../../src/extractor/extractTopSearch';
@@ -19,6 +22,16 @@ describe('Extractors Comprehensive Suite', () => {
       expect(result.spotlight).toHaveLength(1);
       expect(result.spotlight[0].title).toBe('Spotlight Anime');
     });
+
+    it('should extract the current Next.js homepage payload', () => {
+      const result = extractHomepage(mockHtmlData.nextHomepage);
+      expect(result.spotlight).toHaveLength(1);
+      expect(result.spotlight[0]).toMatchObject({
+        id: 'one-piece-12',
+        title: 'One Piece',
+        poster: 'https://example.com/one-piece.jpg',
+      });
+    });
   });
 
   describe('extractDetailpage', () => {
@@ -26,6 +39,27 @@ describe('Extractors Comprehensive Suite', () => {
       const result = extractDetailpage(mockHtmlData.detail);
       expect(result.title).toBe('Detail Anime');
       expect(result.is18Plus).toBe(true);
+    });
+
+    it('should map the current anime details JSON API', () => {
+      const result = extractDetailpageFromApi({
+        id: 12,
+        slug: 'one-piece-12',
+        titles: { english: 'One Piece', romaji: 'One Piece', native: 'ONE PIECE' },
+        synopsis: 'A pirate adventure.',
+        type: 'TV',
+        status: 'RELEASING',
+        duration_min: 24,
+        episode: { episodes: 1166, sub: 1166, dub: 1130 },
+        images: { poster: 'https://example.com/one-piece.jpg' },
+        genres: ['Action'],
+      });
+
+      expect(result).toMatchObject({
+        id: 'one-piece-12',
+        title: 'One Piece',
+        episodes: { eps: 1166, sub: 1166, dub: 1130 },
+      });
     });
   });
 
@@ -66,6 +100,47 @@ describe('Extractors Comprehensive Suite', () => {
       const result = extractEpisodes(mockHtmlData.episodes);
       expect(result).toHaveLength(1);
       expect(result[0].title).toBe('Episode 1');
+    });
+
+    it('should extract episodes and player URLs from the current anime payload', () => {
+      const result = extractEpisodes(mockHtmlData.nextAnime, 'one-piece-12');
+      expect(result).toHaveLength(1);
+      expect(result[0]).toMatchObject({
+        episodeNumber: 1,
+        animeId: 12,
+        embedId: '2142',
+        sub: true,
+        dub: true,
+        embedUrl: 'https://cdn.4animo.xyz/embed/hd-1/12/1/sub?k=1',
+        dubEmbedUrl: 'https://cdn.4animo.xyz/embed/hd-1/12/1/dub?k=1',
+      });
+    });
+
+    it('should map the current episodes JSON API', () => {
+      const result = extractEpisodesFromApi(
+        {
+          anime_id: 12,
+          total: 1,
+          sub_count: '1',
+          dub_count: '1',
+          data: [
+            {
+              id: 1,
+              anime_id: 12,
+              number: 1,
+              titles: { en: "I'm Luffy!", romaji: 'Ore wa Luffy!' },
+              filler: false,
+              thumbnail: 'https://example.com/episode-1.jpg',
+              sub: true,
+              dub: true,
+              embed_id: '2142',
+            },
+          ],
+        },
+        'one-piece-12'
+      );
+
+      expect(result[0].embedUrl).toBe('https://cdn.4animo.xyz/embed/hd-1/12/1/sub?k=1');
     });
   });
 
