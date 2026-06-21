@@ -106,9 +106,13 @@ describe('Controllers Comprehensive Suite (Jest)', () => {
   });
 
   it('listpageController should return anime list', async () => {
-    mockSuccess(mockHtmlData.search);
+    mockSuccess(mockHtmlData.listApi);
     const result = await listpageController(createMockContext({ query: 'most-popular' }));
-    expect(result.response).toBeDefined();
+    expect(result.animes[0].id).toBe('attack-on-titan-6436');
+    expect(mockFetch).toHaveBeenCalledWith(
+      'https://api.kryzox.xyz/animes/most-popular?page=1',
+      expect.any(Object)
+    );
   });
 
   it('topSearchController should return top search items', async () => {

@@ -14,6 +14,19 @@ export const mockHtmlData = {
     ],
     pageInfo: { currentPage: 2, hasNextPage: true, totalPages: 4 },
   }),
+  listApi: JSON.stringify({
+    response: [
+      {
+        slug: 'attack-on-titan-6436',
+        title: 'Attack on Titan',
+        alternativeTitle: 'Shingeki no Kyojin',
+        poster: 'https://example.com/aot.jpg',
+        type: 'TV',
+        episodes: { sub: 25, dub: 25, eps: 25 },
+      },
+    ],
+    pageInfo: { currentPage: 1, hasNextPage: true, totalPages: 10 },
+  }),
   homepageApi: JSON.stringify({
     success: true,
     data: {
