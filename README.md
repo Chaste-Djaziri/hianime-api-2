@@ -256,7 +256,7 @@ docker-compose up -d
 2. Sign up at [Vercel](https://vercel.com)
 3. Create a new project and import your repository
 4. Select **Other** as the framework preset
-5. Leave the output directory empty; Vercel deploys `api/index.ts` as a function
+5. Keep the output directory as `public`; Vercel deploys `api/index.ts` separately as a function
 6. Click **Deploy**
 
 Do not set the build command to `npm run vercel-build`. The repository's
