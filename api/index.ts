@@ -1,5 +1,4 @@
 import { Hono } from 'hono';
-import { handle } from 'hono/vercel';
 import { cors } from 'hono/cors';
 import { logger } from 'hono/logger';
 import hiAnimeRoutes from '../src/routes/routes';
@@ -34,7 +33,7 @@ if (!config.isProduction || config.enableLogging) {
 }
 
 // Health Check
-app.get('/ping', (c) => {
+app.get('/ping', c => {
   return c.json({
     status: 'ok',
     timestamp: new Date().toISOString(),
@@ -55,8 +54,10 @@ app.onError((err, c) => {
   return fail(c, 'Internal server error', 500);
 });
 
-app.notFound((c) => {
+app.notFound(c => {
   return fail(c, 'Route not found', 404);
 });
 
-export default handle(app);
+export default {
+  fetch: app.fetch,
+};
